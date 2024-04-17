@@ -95,7 +95,7 @@ export default function Create() {
     setDetailOpen(true);
   };
 
-  
+
   const handleEventClick = () => {
     DetailOpenModal();
   };
@@ -119,7 +119,7 @@ export default function Create() {
 
     if (response.ok) {
       alert("수정 완료")
-      fetchSchedule()
+      fetchSchedules()
     } else {
       alert("수정 실패")
     }
@@ -131,6 +131,30 @@ export default function Create() {
 
   // 스케줄 삭제 시작
 
+
+  useEffect(() => {
+    fetchSchedules()
+  }, [])
+
+
+  const fetchArticles = () => {
+    fetchSchedules("http://localhost:8050/api/v1/schedules")
+      .then(result => result.json())
+      .then(result => setArticles(result.data.schedules))
+  }
+
+  const handleDelete = async (id) => {
+    const response = await fetch(`http://localhost:8090/api/v1/schedules/${id}`, {
+      method: 'DELETE'
+    })
+
+    if (response.ok) {
+      alert("스케줄 삭제 성공")
+      fetchArticles()
+    } else {
+      alert("스케줄 삭제 실패")
+    }
+  }
   // 스케줄 삭제 끝
 
   const handleEventDrop = async (dropInfo) => {
@@ -155,7 +179,7 @@ export default function Create() {
 
       if (response.ok) {
         alert("스케줄 변경 완료");
-        fetchSchedules(); // 변경된 스케줄 다시 불러오기
+        fetchSchedules();
       } else {
         alert("스케줄 변경 실패");
       }
@@ -239,7 +263,7 @@ export default function Create() {
           eventsSet={handleEvents}
           eventDrop={handleEventDrop}
         />
-        {/* 등록 모달 시작 */} 
+        {/* 등록 모달 시작 */}
         <Transition appear show={createOpen} as={Fragment}>
           <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={CreatCloseModal}>
             <div className="min-h-screen px-4 text-center">
@@ -316,9 +340,9 @@ export default function Create() {
             </div>
           </Dialog>
         </Transition>
-        {/* 등록 모달 끝 */} 
+        {/* 등록 모달 끝 */}
 
-        {/* 디테일 모달 시작 (수정,삭제 포함) */} 
+        {/* 디테일 모달 시작 (수정,삭제 포함) */}
         <Transition appear show={detailOpen} as={Fragment}>
           <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={CreatCloseModal}>
             <div className="min-h-screen px-4 text-center">
@@ -429,6 +453,7 @@ export default function Create() {
                           수정
                         </button>
                         <button
+                          onClick={() => handleDelete(row.id)}
                           className="rounded-md bg-black/20 ml-3 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
                         >
                           삭제
@@ -448,7 +473,7 @@ export default function Create() {
             </div>
           </Dialog>
         </Transition>
-        {/* 디테일 모달 끝 */} 
+        {/* 디테일 모달 끝 */}
 
       </div>
     </>

@@ -40,8 +40,8 @@ public class ScheduleService {
         this.scheduleRepository.save(schedule);
 
         return RsData.of(
-                "S-3",
-                "스케줄이 생성 되었습니다.",
+                "S-01",
+                "Success 스케줄이 생성 되었습니다.",
                 schedule
         );
     }
@@ -59,8 +59,8 @@ public class ScheduleService {
         scheduleRepository.save(schedule);
 
         return RsData.of(
-                "S-4",
-                "스케줄이 수정 되었습니다.",
+                "S-03",
+                "Updated 스케줄이 수정 되었습니다.",
                 schedule
         );
     }

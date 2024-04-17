@@ -1,7 +1,9 @@
 package com.Planner.PlanifyHub.domain.calendar.Entity;
 
+import com.Planner.PlanifyHub.domain.member.Entity.Member;
 import com.Planner.PlanifyHub.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -16,11 +18,8 @@ import java.time.LocalDate;
 @SuperBuilder
 @ToString(callSuper = true)
 public class Calendar extends BaseEntity {
-
-    private String title;
-    private String content;
-    private String color;
-    private LocalDate start_date;
-    private LocalDate end_date;
-
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    @JsonIgnore
+    private Member member;
 }

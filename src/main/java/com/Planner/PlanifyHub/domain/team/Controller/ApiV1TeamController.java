@@ -1,15 +1,16 @@
 package com.Planner.PlanifyHub.domain.team.Controller;
 
-import com.Planner.PlanifyHub.domain.schedule.Entity.Schedule;
-
 import com.Planner.PlanifyHub.domain.team.Entity.Team;
 import com.Planner.PlanifyHub.domain.team.Request.CreateRequest;
 import com.Planner.PlanifyHub.domain.team.Response.CreateResponse;
+import com.Planner.PlanifyHub.domain.team.Response.TeamResponse;
 import com.Planner.PlanifyHub.domain.team.Service.TeamService;
 import com.Planner.PlanifyHub.global.RsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +39,11 @@ public class ApiV1TeamController {
                 "S-01",
                 "Success 팀 삭제가 완료되었습니다."
         );
+    }
+
+    @GetMapping("")
+    public RsData<TeamResponse> getTeams() {
+        List<Team> teams = this.teamService.getList();
+        return RsData.of("S-01", "Success 요청 성공", new TeamResponse(teams));
     }
 }

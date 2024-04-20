@@ -10,10 +10,12 @@ import koLocale from '@fullcalendar/core/locales/ko';
 import listPlugin from '@fullcalendar/list';
 import multiMonthPlugin from '@fullcalendar/multimonth'
 import { Fragment } from 'react';
+import { useParams } from 'next/navigation';
 
 
 export default function Create() {
-
+  
+   const params = useParams();
 
   // 스케줄 등록 시작
   const [createOpen, setCreateOpen] = useState(false);

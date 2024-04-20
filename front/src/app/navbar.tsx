@@ -14,8 +14,6 @@ const leftnavigation = [
   { name: 'HOME', href: '/', current: true },
   { name: 'Calendar', href: '/calendar', current: false },
   { name: 'Team', href: '/team', current: false },
-  { name: 'Team Calendar', href: '#', current: false },
-  { name: 'Project', href: '/project', current: false },
   { name: '로그인', href: '/member/login', current: false },
   { name: '로그아웃', href: '/member/logout', current: false ,}
 ]

@@ -32,6 +32,10 @@ public class ApiSecurityConfig {
                                 .requestMatchers("/api/*/Schedules/*").permitAll() // 글 상세보기는 누나 가능
                                 .requestMatchers("/api/*/Teams").permitAll() // 전체 글 보기는 누구나 가능
                                 .requestMatchers("/api/*/Teams/*").permitAll() // 글 상세보기는 누나 가능
+                                .requestMatchers("/api/*/Projects").permitAll() // 전체 글 보기는 누구나 가능
+                                .requestMatchers("/api/*/Projects/*").permitAll() // 글 상세보기는 누나 가능
+                                .requestMatchers("/api/*/Issues").permitAll() // 전체 글 보기는 누구나 가능
+                                .requestMatchers("/api/*/Issues/*").permitAll() // 글 상세보기는 누나 가능
                                 .anyRequest().authenticated() // 나머지는 인증/인가 처리된 사용자만 가능
                 )
                 .cors(

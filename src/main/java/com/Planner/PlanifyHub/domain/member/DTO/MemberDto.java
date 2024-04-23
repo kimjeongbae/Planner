@@ -14,6 +14,7 @@ public class MemberDto {
     private String username;
     private String nickname;
     private String email;
+    private String thumbnailImg;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -22,6 +23,7 @@ public class MemberDto {
         this.username = member.getUsername();
         this.nickname = member.getNickname();
         this.email = member.getEmail();
+        this.thumbnailImg = member.getThumbnailImg();
         this.createdDate = member.getCreatedDate();
         this.modifiedDate = member.getModifiedDate();
     }

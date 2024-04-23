@@ -25,11 +25,12 @@ public class ProjectService {
     }
 
     @Transactional
-    public RsData<Project> create(Member member, String title, String content) {
+    public RsData<Project> create(Member member, String title, String content, String state) {
         Project project = Project.builder()
                 .member(member)
                 .title(title)
                 .content(content)
+                .state(state)
                 .build();
 
         this.projectRepository.save(project);
@@ -45,9 +46,10 @@ public class ProjectService {
         return projectRepository.findById(id);
     }
 
-    public RsData<Project> update(Project project, String title, String content) {
+    public RsData<Project> update(Project project, String title, String content, String state) {
         project.setTitle(title);
         project.setContent(content);
+        project.setState(state);
         projectRepository.save(project);
 
         return RsData.of(

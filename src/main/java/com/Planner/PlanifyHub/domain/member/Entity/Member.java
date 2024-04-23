@@ -28,6 +28,8 @@ public class Member extends BaseEntity {
     @JsonIgnore
     private String password2;
     private String email;
+
+    private String thumbnailImg;
     private String refreshToken;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

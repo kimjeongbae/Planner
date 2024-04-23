@@ -2,7 +2,32 @@
 
 import Link from "next/link";
 import { PencilIcon } from '@heroicons/react/20/solid';
+import { useEffect, useState } from "react";
 export default function Project() {
+
+    const [projects, setProjects] = useState([]);
+
+    const [openRow1, setOpenRow1] = useState(true);
+    const [openRow2, setOpenRow2] = useState(true);
+
+    const toggleRow1 = () => {
+        setOpenRow1(!openRow1);
+    };
+
+    const toggleRow2 = () => {
+        setOpenRow2(!openRow2);
+    };
+
+    useEffect(() => {
+        fetchIssues();
+    }, []);
+
+    const fetchIssues = () => {
+        fetch("http://localhost:8050/api/v1/Projects")
+            .then(result => result.json())
+            .then(result => setProjects(result.data.projects))
+            .catch(error => console.error('Error fetching projects:', error));
+    }
 
     return (
         <>
@@ -30,74 +55,36 @@ export default function Project() {
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
-                                    프로젝트 이름
+                                    번호
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    제목
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     내용
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    등록일
-                                </th>
-                                <th scope="col" className="px-6 py-3">
                                     상태
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    <span className="sr-only">Edit</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Apple MacBook Pro 17"
-                                </th>
-                                <td className="px-6 py-4">
-                                    Silver
-                                </td>
-                                <td className="px-6 py-4">
-                                    Laptop
-                                </td>
-                                <td className="px-6 py-4">
-                                    $2999
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">자세히</a>
-                                </td>
-                            </tr>
-                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Microsoft Surface Pro
-                                </th>
-                                <td className="px-6 py-4">
-                                    White
-                                </td>
-                                <td className="px-6 py-4">
-                                    Laptop PC
-                                </td>
-                                <td className="px-6 py-4">
-                                    $1999
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">자세히</a>
-                                </td>
-                            </tr>
-                            <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Magic Mouse 2
-                                </th>
-                                <td className="px-6 py-4">
-                                    Black
-                                </td>
-                                <td className="px-6 py-4">
-                                    Accessories
-                                </td>
-                                <td className="px-6 py-4">
-                                    $99
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">자세히</a>
-                                </td>
-                            </tr>
+                            {projects.map(row => (
+                                <tr key={row.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {row.id}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Link href={`/project/${row.id}`}>{row.title}</Link>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {row.content}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {row.state}
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

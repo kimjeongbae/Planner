@@ -4,9 +4,10 @@ import com.Planner.PlanifyHub.domain.issue.DTO.IssueDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class IssueResponse {
-    private final IssueDTO issue;
+public class IssuesResponse {
+    private final List<IssueDTO> issues;
 }

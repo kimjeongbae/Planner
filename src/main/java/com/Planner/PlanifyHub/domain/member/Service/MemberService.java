@@ -11,10 +11,14 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -23,14 +27,30 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    @Value("${custom.fileDirPath}")
+    private String fileDirPath;
 
-    public Member join(String username, String nickname, String hashedPassword, String email) {
+    public Member join(String username, String nickname, String hashedPassword, String email, MultipartFile thumbnail) throws IOException {
+        String thumbnailRelPath;
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            thumbnailRelPath = "member/" + UUID.randomUUID().toString() + ".jpg";
+            File thumbnailFile = new File(fileDirPath + "/" + thumbnailRelPath);
+            try {
+                thumbnail.transferTo(thumbnailFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            // 기본 이미지 경로 설정
+            thumbnailRelPath = "default_profile.jpg";
+        }
         // Member 객체 생성
         Member member = Member.builder()
                 .username(username)
                 .nickname(nickname)
                 .password(hashedPassword)
                 .email(email)
+                .thumbnailImg(thumbnailRelPath)
                 .build();
         Calendar calendar = Calendar.builder().member(member).build();
         member.setCalendar(calendar);

@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { useEffect, Fragment, useState, useRef } from 'react';
 
 const TeamManagement = [
-    { name: '팀 일정', href: '#', icon: CalendarIcon },
+    { name: '팀 일정', href: '/calendar', icon: CalendarIcon },
     { name: '팀원 초대', href: '#', icon: UserPlusIcon },
-    { name: '프로젝트', href: '#', icon: DocumentTextIcon },
+    { name: '프로젝트', href: '/project', icon: DocumentTextIcon },
     { name: '팀 수정', href: '#', icon: PencilSquareIcon },
     { name: '팀 삭제', href: '#', icon: TrashIcon },
 ];
@@ -111,7 +111,7 @@ function TeamItem({ team }) {
             <div className="max-w-xs overflow-hidden rounded-lg shadow-lg">
                 <img className="object-cover w-full h-48" src="https://images.pexels.com/photos/2033997/pexels-photo-2033997.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Flower and sky" />
                 <div className="px-6 py-4">
-                    <h4 className="mb-3 text-xl font-semibold tracking-tight text-gray-800">{team.name}</h4>
+                    <h4 className="mb-3 text-xl font-semibold tracking-tight text-gray-800"><Link href={'/team/1'}>{team.name}</Link></h4>
                     <p className="leading-normal text-gray-700">{team.content}</p>
                 </div>
             </div>

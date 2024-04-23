@@ -15,4 +15,5 @@ public class JoinRequest {
     private String password2;
     @NotBlank
     private String email;
+    private String thumbnailImg;
 }

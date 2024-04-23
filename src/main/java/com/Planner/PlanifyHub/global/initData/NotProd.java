@@ -20,9 +20,9 @@ public class NotProd {
         String password = passwordEncoder.encode("1234");
         return args -> {
             // 회원 3명 추가
-            Member user1 = memberService.join("user1","nickname1", password, "test@test.com");
-            Member user2 = memberService.join("user2","nickname2", password, "test1@test.com");
-            Member admin  = memberService.join("admin", "nickname3", password, "admin@test.com");
+            Member user1 = memberService.join("user1","nickname1", password, "test@test.com",null);
+            Member user2 = memberService.join("user2","nickname2", password, "test1@test.com",null);
+            Member admin  = memberService.join("admin", "nickname3", password, "admin@test.com",null);
 
 
             // 작성자 회원 추가

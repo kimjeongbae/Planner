@@ -1,10 +1,12 @@
 package com.Planner.PlanifyHub.domain.project.Controller;
 
+import com.Planner.PlanifyHub.domain.project.DTO.ProjectDTO;
 import com.Planner.PlanifyHub.domain.project.Entity.Project;
 import com.Planner.PlanifyHub.domain.project.Request.CreateRequest;
 import com.Planner.PlanifyHub.domain.project.Request.UpdateRequest;
 import com.Planner.PlanifyHub.domain.project.Response.CreateResponse;
 import com.Planner.PlanifyHub.domain.project.Response.ProjectResponse;
+import com.Planner.PlanifyHub.domain.project.Response.ProjectsResponse;
 import com.Planner.PlanifyHub.domain.project.Response.UpdateResponse;
 import com.Planner.PlanifyHub.domain.project.Service.ProjectService;
 
@@ -24,7 +26,7 @@ public class ApiV1ProjectController {
 
     @PostMapping("")
     public RsData<CreateResponse> create(@Valid @RequestBody CreateRequest createRequest) {
-        RsData<Project> ProjectRs = this.projectService.create(createRequest.getAuthor() ,createRequest.getTitle(), createRequest.getContent());
+        RsData<Project> ProjectRs = this.projectService.create(createRequest.getAuthor() ,createRequest.getTitle(), createRequest.getContent(), createRequest.getState());
 
         if (ProjectRs.isFail()) return (RsData) ProjectRs;
 
@@ -36,11 +38,11 @@ public class ApiV1ProjectController {
     }
 
     @GetMapping("/{id}")
-    public RsData<Project> getProject (@PathVariable("id") Long id) {
-        return projectService.getProject(id).map(schedule -> RsData.of(
+    public RsData<ProjectResponse> getProject(@PathVariable("id") Long id) {
+        return projectService.getProject(id).map(project -> RsData.of(
                 "S-01",
                 "Success 조회 성공",
-                schedule
+                new ProjectResponse(new ProjectDTO(project))
         )).orElseGet(() -> RsData.of(
                 "F-01",
                 "Bad Request %d 번 프로젝트는 존재하지 않습니다.".formatted(id),
@@ -48,9 +50,13 @@ public class ApiV1ProjectController {
         ));
     }
     @GetMapping("")
-    public RsData<ProjectResponse> getProjects() {
-        List<Project> projects = this.projectService.getList();
-        return RsData.of("S-01", "Success 요청 성공", new ProjectResponse(projects));
+    public RsData<ProjectsResponse> getProjects() {
+        List<ProjectDTO> projectDTOList = this.projectService
+                .getList()
+                .stream()
+                .map(project -> new ProjectDTO(project))
+                .toList();
+        return RsData.of("S-01", "성공", new ProjectsResponse(projectDTOList));
     }
 
 
@@ -66,7 +72,7 @@ public class ApiV1ProjectController {
 
         // 회원 권한 체크 canModify();
 
-        RsData<Project> updateRs = this.projectService.update(optionalProject.get(), updateRequest.getTitle(), updateRequest.getContent());
+        RsData<Project> updateRs = this.projectService.update(optionalProject.get(), updateRequest.getTitle(), updateRequest.getContent(), updateRequest.getState());
 
         return RsData.of(
                 updateRs.getResultCode(),

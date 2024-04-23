@@ -15,7 +15,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -28,7 +30,7 @@ public class ApiV1memberController {
 
     @PostMapping("/join")
     @ResponseBody
-    public RsData<JoinResponse> signUp(@Valid @RequestBody JoinRequest joinRequest) {
+    public RsData<JoinResponse> signUp(@Valid JoinRequest joinRequest, @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnailImg) throws IOException {
         Optional<Member> existingUsername = memberService.findByUsername(joinRequest.getUsername());
         if (existingUsername.isPresent()) {
             return RsData.of("F-06", "Validation Error 해당 사용자명이 이미 존재합니다");
@@ -40,9 +42,16 @@ public class ApiV1memberController {
         if (!joinRequest.getPassword().equals(joinRequest.getPassword2())) {
             return RsData.of("F-06", "Validation Error 비밀번호가 서로 일치하지 않습니다");
         }
+        try {
+            if (thumbnailImg == null) {
+                throw new IllegalArgumentException("이미지가 없습니다.");
+            }
         String hashedPassword = passwordEncoder.encode(joinRequest.getPassword());
-        Member member = memberService.join(joinRequest.getUsername(), joinRequest.getNickname() ,hashedPassword, joinRequest.getEmail());
+        Member member = memberService.join(joinRequest.getUsername(), joinRequest.getNickname() ,hashedPassword, joinRequest.getEmail(),thumbnailImg);
         return RsData.of("S-07", "Completed 회원가입이 완료되었습니다.", new JoinResponse(member));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/login")

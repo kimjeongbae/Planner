@@ -1,35 +1,60 @@
 'use client'
-
+import { useRouter } from "next/navigation";
 import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { useState } from 'react';
 
 export default function JoinMember() {
 
-    const [member, setMember] = useState({ username: '', nickname: '', email: '', password: '', password2: '' });
-
+    const router = useRouter();
+    const [member, setMember] = useState({ username: '', nickname: '', email: '', password: '', password2: '', thumbnail: null });
+    const [thumbnail, setThumbnail] = useState(null);
+    const [thumbnailPreview, setThumbnailPreview] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const formData = new FormData();
+        formData.append('username', member.username);
+        formData.append('nickname', member.nickname);
+        formData.append('email', member.email);
+        formData.append('password', member.password);
+        formData.append('password2', member.password2);
+        formData.append('thumbnail', member.thumbnail);
+
         const response = await fetch('http://localhost:8050/api/v1/members/join', {
             method: 'POST',
-            credentials: 'include', // 핵심 변경점
+            credentials: 'include',
+            body: formData,
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(member)
-        })
-
+                'Content-Type': 'multipart/form-data'
+            }
+        });
 
         if (response.ok) {
-            alert("회원가입 성공")
+            alert("회원가입 성공");
+            router.push("/login");
         } else {
-            alert("회원가입 실패")
+            alert("회원가입 실패");
         }
     }
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setMember({ ...member, [name]: value })
+        setMember({ ...member, [name]: value });
+    }
+
+    const handleThumbnailChange = (e) => {
+        const file = e.target.files[0];
+        setThumbnail(file);
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setThumbnailPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setThumbnailPreview(null);
+        }
     }
 
     return (
@@ -132,13 +157,22 @@ export default function JoinMember() {
                                 프로필 이미지
                             </label>
                             <div className="mt-2 flex items-center gap-x-3">
-                                <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
-                                <button
-                                    type="button"
-                                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                >
+                                {thumbnailPreview ? (
+                                    <img src={thumbnailPreview} alt="프로필 이미지 미리보기" className="h-12 w-12 rounded-full" />
+                                ) : (
+                                    <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
+                                )}
+                                <input
+                                    onChange={handleThumbnailChange}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    id="thumbnail"
+                                    name="thumbnail"
+                                />
+                                <label htmlFor="thumbnail" className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer">
                                     선택
-                                </button>
+                                </label>
                             </div>
                         </div>
                         <div>
